@@ -6,3 +6,13 @@ body {
 a {
   color: #00B7FF;
 }
+
+#scrolla {
+	height: 60vh;
+	overflow: scroll;
+	width: 100%;
+
+}
+#scrolla p {
+	font-size: 84px;
+}
