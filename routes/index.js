@@ -4,6 +4,9 @@ var axios = require('axios');
 var ps = require('xml2js').parseString;
 var fs = require('fs');
 var strob = require('stringify-object');
+var striptags = require('striptags');
+const Entities = require('html-entities').XmlEntities;
+const entities = new Entities();
 
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
@@ -29,28 +32,50 @@ function shuffle(array) {
 router.get('/', function(req, res, next) {
 	
 		axios('http://www.reddit.com/r/worldnews/.rss').then(function(response,err) {
-			ps(response.data,function(err,data){
-				var promises = [];
-				for(var i = 0; i < data.feed.entry.length; i++) {
-					promises.push(axios('http://www.reddit.com/r/worldnews/comments/'+data.feed.entry[i].id[0].substr(3)+'/.rss'));
+			ps(response.data,function(err,zult){
+				var posts = [];
+				var roses = [];
+				var dope = [];
+				for(i in zult.feed.entry) {
+					posts.push(zult.feed.entry[i].id[0].substr(3));
 				}
-				axios.all(promises).then(function(values){
-					var ments = [];
-					for(i in values) {
-						console.log(values[i]);
-						ments.push(values[i].data);
-						ps(values[i].data,function(err,p){
-							ments.push(p);
+				for (p in posts) {
+					var post = posts[p];
+					roses.push(axios('http://www.reddit.com/r/worldnews/comments/'+post+'/.rss'));
+				}
+				Promise.all(roses).then(function(values){
+					for (v in values) {
+						ps(values[v].data,function(err,zult){ // POSTS
+							for (z in zult) { // POST
+								var post = {};
+								var itle = zult[z].title[0];
+								itle = itle.substr(0,itle.length-11);
+								post['title'] = itle;
+								var comms = [];
+								var ments = zult[z].entry;
+								for(m in ments) { // COMMENTS
+									var pushit = ments[m].content[0]._;
+									pushit = pushit.substr(34);
+									pushit = pushit.substr(0,pushit.length-25);
+									pushit = entities.decode(striptags(pushit));
+									comms.push(pushit);
+								}
+								comms.shift();
+								post['ments'] = comms;
+								dope.push(post);
+							}
+
+
+							fs.writeFile(__dirname+'/../public/test.txt',strob(dope),function(err) {
+								if(err) {
+									return console.log(err);
+								}
+							});
 						});
-						
 					}
-					fs.writeFile(__dirname+'/../public/test.txt',strob(ments),function(err) {
-						if(err) {
-							return console.log(err);
-						}
-						res.render('index');
-					});
+					res.render('index',{"dope":dope});
 				});
+				
 			});
 		});
 

@@ -2,5 +2,11 @@ extends layout
 
 block content
   div#scrolla
-    each word in words
-      div= word.itle
+    ul
+    each drip in dope
+      li
+        ul
+          li.title= drip.title
+            each ment in drip.ments
+              li.ment= ment
+      
