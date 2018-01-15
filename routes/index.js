@@ -27,32 +27,75 @@ function shuffle(array) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	axios.get('http://www.reddit.com/r/worldnews/.rss').then(function(response){
-		ps(response.data,function(err,sult){
-			var test = sult.feed.entry.length;
-			var words = [];
-			for(var i = 0; i < sult.feed.entry.length; i++) {
-				console.log('test');
-				console.log(strob(sult.feed.entry[i].title));
-				words.push(sult.feed.entry[i].title);
-			}
-			words = shuffle(words);
-			fs.writeFile(__dirname+'/../public/test.txt',words,function(err) {
-				if(err) {
-					return console.log(err);
+	
+		axios('http://www.reddit.com/r/worldnews/.rss').then(function(response,err) {
+			ps(response.data,function(err,data){
+				var promises = [];
+				for(var i = 0; i < data.feed.entry.length; i++) {
+					promises.push(axios('http://www.reddit.com/r/worldnews/comments/'+data.feed.entry[i].id[0].substr(3)+'/.rss'));
 				}
-				res.render('index');
+				axios.all(promises).then(function(values){
+					var ments = [];
+					for(i in values) {
+						console.log(values[i]);
+						ments.push(values[i].data);
+						ps(values[i].data,function(err,p){
+							ments.push(p);
+						});
+						
+					}
+					fs.writeFile(__dirname+'/../public/test.txt',strob(ments),function(err) {
+						if(err) {
+							return console.log(err);
+						}
+						res.render('index');
+					});
+				});
 			});
 		});
+
+
+		//var debug = {};
+		//axios.get('http://www.reddit.com/r/worldnews/.rss').then(function(response){
+		//ps(response.data,function(err,sult){
+		//	var test = sult.feed.entry.length;
+		//	var words = [];
+		//	var ments = {};
+		//	for(var i = 0; i < sult.feed.entry.length; i++) {
+		//		var id = sult.feed.entry[i].id[0].substr(3);
+		//		var itle = shuffle(sult.feed.entry[i].title[0].split(" "));
+		//		words.push({
+		//			"id":id,
+		//			"itle":itle
+		//		});
+		//	}
+		//	for(var g = 0; g < words.length; g++) {
+		//		console.log(words[g]);
+		//		axios.get('http://www.reddit.com/r/worldnews/comments/'+words[g].id+'/.rss').then(function(rep){
+		//			ps(rep.data,function(err,zult){
+		//				console.log(strob(zult));
+		//				debug["zult"+g] = zult;
+		//			});
+		//		}).catch(function(err){ 
+		//			console.log(err);
+		//		});
+		//	}
+		//	fs.writeFile(__dirname+'/../public/test.txt',strob(debug),function(err) {
+		//		if(err) {
+		//			return console.log(err);
+		//		}
+		//		res.render('index',{"words":words});
+		//	});
+		//});
 		//ps(response.data.feed,function(err,result){
 		//	var words = [];
 		//	for(var i = 0; i < result.length; i++) {
 		//		words.push(result[i]);
 		//	}
 		//});
-}).catch(function(err){
-		console.log(err);
-	});
+//}).catch(function(err){
+//		console.log(err);
+//	});
 });
 
 

@@ -43,4 +43,11 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+//var server = http.createServer(app);
+//reload(app);
+// 
+//server.listen(app.get('port'), function () {
+//  console.log('Web server listening on port ' + app.get('port'))
+//})
+//
 module.exports = app;
