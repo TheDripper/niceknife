@@ -2,11 +2,11 @@ extends layout
 
 block content
   div#scrolla
-    ul
     each drip in dope
-      li
+      div.post
+        h1= drip.title
         ul
-          li.title= drip.title
-            each ment in drip.ments
-              li.ment= ment
+        div.ments
+          each ment in drip.ments
+            li.ment= ment
       
