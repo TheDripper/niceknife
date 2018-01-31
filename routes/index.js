@@ -55,10 +55,13 @@ router.get('/', function(req, res, next) {
 								var ments = zult[z].entry;
 								for(m in ments) { // COMMENTS
 									var pushit = ments[m].content[0]._;
-									pushit = pushit.substr(34);
-									pushit = pushit.substr(0,pushit.length-25);
-									pushit = entities.decode(striptags(pushit));
-									comms.push(pushit);
+									if(pushit != undefined) {
+										console.log(pushit);
+										pushit = pushit.substr(34);
+										pushit = pushit.substr(0,pushit.length-25);
+										pushit = entities.decode(striptags(pushit));
+										comms.push(pushit);
+									}
 								}
 								comms.shift();
 								post['ments'] = comms;
