@@ -1,5 +1,7 @@
 extends layout
 
 block content
-  h1= nse
+  ul
+  each ent in entry
+    li= ent.content[0]._
   
