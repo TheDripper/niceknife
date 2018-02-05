@@ -1,8 +1,6 @@
 extends layout
 
 block content
-  ul
   each ent in entry
-    div(style={background: "#{ent}"} class="box")
-      img(src="#{ent}")
+    a(href="#{ent}") #{ent}
   
