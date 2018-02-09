@@ -11,23 +11,12 @@ const { JSDOM } = jsdom;
 
 router.get('/',function(req,res,next){
 	const dom = new JSDOM('<!DOCTYPE html>');
-	gettit.getSub('pics').then(function(response,err){
-		gettit.parseSub(response).then(function(response,err){
-			var tags = [];
-			var roses = [];
-			var po = response.feed.entry;
-			for(var i=0; i<po.length; i++) {
-				//var link = po[i].link[0].$.href;
-			}
-			//throw new Error('fuck');
-			Promise.all(roses).then(function(values){
-				console.log(values);
-			}).catch(function(err){
-				console.log(err);
-			});
-			res.render('gets',{"entry":tags});
-		});
+	gettit.getSubLinks('pics').then(function(re){
+		return gettit.getPics(re);
+	}).then(function(re){
+		console.log('done');
 	});
+
 });
 
 module.exports = router;
