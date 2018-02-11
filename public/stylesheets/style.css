@@ -1,5 +1,9 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
 body {
-  padding: 50px;
   font: 14px "Montserrat"; }
 
 ul {
@@ -24,5 +28,9 @@ li {
 
 img {
 	width: 500px;
+	height: 500px;
+}
+.mage {
+	width: 500vw;
 	height: 500px;
 }

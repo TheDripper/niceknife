@@ -1,6 +1,6 @@
 extends layout
 
 block content
-  each ent in entry
-    a(href="#{ent}") #{ent}
+  each mage in mages
+    div(style="background:url(#{mage})" class="mage")
   

@@ -11,10 +11,13 @@ const { JSDOM } = jsdom;
 
 router.get('/',function(req,res,next){
 	const dom = new JSDOM('<!DOCTYPE html>');
+	gettit.getSubTitles('worldnews').then(function(re){
+		console.log(re);
+	});
 	gettit.getSubLinks('pics').then(function(re){
 		return gettit.getPics(re);
 	}).then(function(re){
-		console.log('done');
+		res.render('gets',{"mages":re});
 	});
 
 });
